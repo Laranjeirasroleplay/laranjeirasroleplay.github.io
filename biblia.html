@@ -5,18 +5,14 @@
   <link rel="icon" href="/Logo.png"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <meta name="theme-color" content="#34C759"/>
-  <meta name="description" content="Faça o download do Launcher do Melhor servidor de Roleplay do SA-MP: Laranjeiras Roleplay!"/>
+  <meta name="description" content="Bíblia Roleplay - Laranjeiras Roleplay"/>
 
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet"/>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.0/dist/sweetalert2.min.css" rel="stylesheet"/>
-  <link href="https://cdn.jsdelivr.net/gh/hung1001/font-awesome-pro@4cac1a6/css/all.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css" rel="stylesheet"/>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.4.0/clipboard.min.js"></script>
 
   <title>Bíblia Roleplay - Laranjeiras Roleplay</title>
 
@@ -24,30 +20,29 @@
     body {
       background-color: #04843c;
       margin: 0;
-      padding: 0;
       font-family: 'Poppins', sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
       height: 100vh;
+      overflow: hidden;
     }
 
     .toggle-icon {
       position: fixed;
       top: 5px;
       right: 10px;
-      font-size: 27px;
       width: 42px;
       height: 42px;
-      cursor: pointer;
-      z-index: 999;
-      color: black;
+      font-size: 26px;
+      background: #fb6304;
       border: 3px solid black;
       border-radius: 5px;
-      background: #fb6304;
+      cursor: pointer;
+      z-index: 999;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
     }
 
     .sidebar {
@@ -60,7 +55,7 @@
       border-left: 2px solid #fff;
       padding: 20px;
       transform: translateX(200px);
-      transition: transform 0.5s ease-in-out, width 0.5s ease-in-out;
+      transition: transform 0.4s ease;
       z-index: 1000;
     }
 
@@ -72,7 +67,6 @@
     .options {
       list-style: none;
       padding: 0;
-      margin: 0;
     }
 
     .options li {
@@ -87,44 +81,42 @@
       background-color: #444;
     }
 
-    .options li i {
+    .options i {
       margin-right: 10px;
     }
 
     .close-icon {
       position: absolute;
-      top: 30px;
+      top: 25px;
       right: 20px;
-      font-size: 20px;
-      cursor: pointer;
       color: #fff;
+      cursor: pointer;
     }
   </style>
 </head>
 
-<body>
+<body oncontextmenu="return false">
 
   <span class="toggle-icon" onclick="toggleSidebar()">
     <i class="fas fa-bars"></i>
   </span>
 
-  <h1 style="margin-top: 25px; color: white;">
+  <h1 style="margin: 20px 0; color: white;">
     Bíblia Roleplay
   </h1>
 
-  <!-- CONTAINER PDF -->
+  <!-- PDF SEM DOWNLOAD -->
   <div style="
-      width: 95%;
-      max-width: 1200px;
-      height: calc(100vh - 120px);
-      background: #fff;
-      border-radius: 8px;
-      border: 3px solid #000;
-      overflow: hidden;
-      margin-bottom: 15px;
+    width: 95%;
+    max-width: 1200px;
+    height: calc(100vh - 120px);
+    background: #fff;
+    border-radius: 8px;
+    border: 3px solid #000;
+    overflow: hidden;
   ">
-    <iframe 
-      src="biblia.pdf"
+    <iframe
+      src="pdfjs/web/viewer.html?file=../../biblia.pdf#toolbar=0&navpanes=0&scrollbar=1"
       width="100%"
       height="100%"
       style="border:none;">
@@ -137,13 +129,13 @@
       <i class="fas fa-times"></i>
     </span>
     <ul class="options">
-      <li onclick="window.location.href='index.html';">
+      <li onclick="location.href='index.html'">
         <i class="fas fa-home"></i> Página Inicial
       </li>
-      <li onclick="window.location.href='catalogo.html';">
+      <li onclick="location.href='catalogo.html'">
         <i class="fas fa-shopping-cart"></i> Catálogo
       </li>
-      <li onclick="window.location.href='loja.html';">
+      <li onclick="location.href='loja.html'">
         <i class="fas fa-store"></i> Loja Cash
       </li>
     </ul>
@@ -158,8 +150,15 @@
       document.getElementById("sidebar").classList.remove("sidebar-open");
     }
 
-    const url = new URL(window.location.href);
-    const token = url.searchParams.get("token");
+    // Bloqueio de atalhos comuns
+    document.addEventListener("keydown", function(e) {
+      if (e.ctrlKey && ["s", "p", "u"].includes(e.key.toLowerCase())) {
+        e.preventDefault();
+      }
+    });
+
+    // Token (se quiser usar depois)
+    const token = new URLSearchParams(window.location.search).get("token");
     if (token) {
       localStorage.setItem("token", token);
     }
