@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <link rel="icon" href="/Logo.png">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Bíblia Roleplay - Laranjeiras Roleplay</title>
+  <meta charset="UTF-8"/>
+  <link rel="icon" href="/Logo.png"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="theme-color" content="#34C759"/>
+  <meta name="description" content="Bíblia Roleplay - Laranjeiras Roleplay"/>
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet"/>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css" rel="stylesheet"/>
+
+  <title>Bíblia Roleplay - Laranjeiras Roleplay</title>
 
   <style>
     body {
+      background-color: #04843c;
       margin: 0;
-      background: #04843c;
       font-family: 'Poppins', sans-serif;
-      height: 100vh;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
+      height: 100vh;
     }
 
     h1 {
@@ -32,8 +38,9 @@
       right: 10px;
       width: 42px;
       height: 42px;
+      font-size: 26px;
       background: #fb6304;
-      border: 3px solid #000;
+      border: 3px solid black;
       border-radius: 5px;
       cursor: pointer;
       z-index: 999;
@@ -42,22 +49,14 @@
       justify-content: center;
     }
 
-    .pdf-box {
+    .pdf-container {
       width: 95%;
       max-width: 1200px;
-      height: calc(100vh - 110px);
-      background: white;
-      border: 3px solid black;
+      height: calc(100vh - 120px);
+      background: #fff;
       border-radius: 8px;
-      overflow-y: auto;
-      padding: 10px;
-    }
-
-    canvas {
-      display: block;
-      margin: 0 auto 20px auto;
-      max-width: 100%;
-      height: auto;
+      border: 3px solid #000;
+      overflow: hidden;
     }
 
     .sidebar {
@@ -66,9 +65,9 @@
       right: 0;
       width: 200px;
       height: 100vh;
-      background: #333;
+      background-color: #333;
       transform: translateX(200px);
-      transition: transform .4s ease;
+      transition: transform 0.4s ease;
       padding: 20px;
       z-index: 1000;
     }
@@ -78,20 +77,39 @@
       width: 85vw;
     }
 
-    .options li {
-      color: white;
+    .options {
       list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .options li {
       padding: 15px;
+      color: white;
       cursor: pointer;
+      display: flex;
+      align-items: center;
     }
 
     .options li:hover {
-      background: #444;
+      background-color: #444;
+    }
+
+    .options i {
+      margin-right: 10px;
+    }
+
+    .close-icon {
+      position: absolute;
+      top: 25px;
+      right: 20px;
+      color: #fff;
+      cursor: pointer;
     }
   </style>
 </head>
 
-<body oncontextmenu="return false">
+<body>
 
   <div class="toggle-icon" onclick="toggleSidebar()">
     <i class="fas fa-bars"></i>
@@ -99,58 +117,52 @@
 
   <h1>Bíblia Roleplay</h1>
 
-  <!-- PDF RENDERIZADO -->
-  <div class="pdf-box" id="pdf-container"></div>
+  <!-- PDF NO CORPO DA PÁGINA (COMO NO STACKOVERFLOW) -->
+  <div class="pdf-container">
+    <object
+      data="biblia.pdf"
+      type="application/pdf"
+      width="100%"
+      height="100%">
+
+      <p style="padding: 20px; text-align: center;">
+        Seu navegador não suporta visualização de PDF.<br>
+        <a href="biblia.pdf" target="_blank">
+          Clique aqui para baixar o PDF
+        </a>
+      </p>
+
+    </object>
+  </div>
 
   <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
+    <span class="close-icon" onclick="closeSidebar()">
+      <i class="fas fa-times"></i>
+    </span>
     <ul class="options">
-      <li onclick="location.href='index.html'">🏠 Página Inicial</li>
-      <li onclick="location.href='catalogo.html'">🛒 Catálogo</li>
-      <li onclick="location.href='loja.html'">🏪 Loja Cash</li>
+      <li onclick="location.href='index.html'">
+        <i class="fas fa-home"></i> Página Inicial
+      </li>
+      <li onclick="location.href='catalogo.html'">
+        <i class="fas fa-shopping-cart"></i> Catálogo
+      </li>
+      <li onclick="location.href='loja.html'">
+        <i class="fas fa-store"></i> Loja Cash
+      </li>
     </ul>
   </div>
 
-  <!-- PDF.JS -->
-  <script src="pdfjs/pdf.js"></script>
   <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs/pdf.worker.js';
-
-    const url = 'biblia.pdf';
-    const container = document.getElementById('pdf-container');
-    const scale = 1.4;
-
-    pdfjsLib.getDocument(url).promise.then(pdf => {
-      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-        pdf.getPage(pageNum).then(page => {
-          const viewport = page.getViewport({ scale });
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-
-          container.appendChild(canvas);
-
-          page.render({
-            canvasContext: ctx,
-            viewport: viewport
-          });
-        });
-      }
-    });
-
     function toggleSidebar() {
       document.getElementById("sidebar").classList.toggle("sidebar-open");
     }
 
-    // Bloqueio de atalhos comuns
-    document.addEventListener("keydown", e => {
-      if (e.ctrlKey && ["s", "p", "u"].includes(e.key.toLowerCase())) {
-        e.preventDefault();
-      }
-    });
+    function closeSidebar() {
+      document.getElementById("sidebar").classList.remove("sidebar-open");
+    }
   </script>
 
 </body>
 </html>
+
